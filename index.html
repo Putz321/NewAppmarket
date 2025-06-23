@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Market Nationalyti</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #00ffea;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .glitch:hover {
+      animation: glitch 0.8s linear infinite;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red; }
+      20% { text-shadow: -2px 0 lime; }
+      40% { text-shadow: 2px 2px blue; }
+      60% { text-shadow: -2px -2px cyan; }
+      80% { text-shadow: 2px -2px yellow; }
+      100% { text-shadow: -2px 2px magenta; }
+    }
+
+    .loading-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: black; color: #00ffee; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; z-index: 9999; font-size: 18px;
+      animation: fadeOut 3s ease 3s forwards;
+    }
+
+    .loading-screen img {
+      width: 120px; height: 120px; border-radius: 100px; margin-bottom: 10px;
+      box-shadow: 0 0 20px #00ffee;
+    }
+
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #00ffee;
+      text-shadow: 0 0 6px #00ffee;
+    }
+
+    .login-btn {
+      background: #ffee00; color: black;
+      padding: 8px 15px; border: none; border-radius: 6px;
+      cursor: pointer; font-weight: bold;
+    }
+
+    .button-group, .layanan {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 10px; margin: 20px 0;
+    }
+
+    button {
+      padding: 12px 20px; border: none; border-radius: 10px;
+      cursor: pointer; font-size: 16px; color: #fff;
+      transition: 0.3s ease;
+      box-shadow: 0 0 5px #00ffee, 0 0 15px #00ffee inset;
+    }
+
+    .purple { background: #6a00ff; }
+    .purple:hover { background: #4b00cc; }
+    .selected { border: 2px solid #00ffee; }
+
+    .green { background: #00875f; }
+    .blue { background: #003bff; }
+    .red { background: #ff0022; }
+
+    .metode-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    select, .order-button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      margin-top: 10px;
+      background: #000;
+      color: #00ffee;
+      border: 1px solid #00ffee;
+      box-shadow: 0 0 8px #00ffee;
+    }
+
+    footer {
+      text-align: center; margin-top: 30px; color: #888; font-size: 14px;
+    }
+
+    .main-menu, .admin-panel, .testimoni-panel {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div class="loading-screen">
+  <img src="https://files.catbox.moe/yzhgqj.jpg" alt="Foto Pembuat">
+  <div class="glitch"><strong>Selamat Datang Di Aplikasi Nationalyti</strong></div>
+  <div class="glitch">Pembuat Aplikasi: Nanda Saputra</div>
+  <div class="glitch">Umur: 17 Tahun</div>
+  <div class="glitch">Asal: Jateng, Cilacap</div>
+</div>
+
+<header>
+  <h1 class="glitch">Digital Market by Nationalyti</h1>
+  <button class="login-btn" onclick="loginAdmin()">Login Admin</button>
+</header>
+
+<!-- MAIN MENU -->
+<div class="main-menu">
+  <h2>Menu Panel Hosting</h2>
+  <div class="button-group" id="panelList"></div>
+
+  <h2>Layanan Lainnya</h2>
+  <div class="layanan">
+    <button class="green" onclick="pilih('Panel Unlimited', 5000, this)">✅ Panel Unlimited</button>
+    <button class="blue" onclick="pilih('Jasa Pembuatan Web', 10000, this)">✅ Jasa Pembuatan Web</button>
+    <button class="red" onclick="pilih('Layanan Nokos Only Indo', 5000, this)">✅ Layanan Nokos Only Indo</button>
+    <button class="purple" onclick="showTestimoni()">Testimoni Pembeli</button>
+  </div>
+
+  <div class="metode-container">
+    <h3>Pilih Metode Pembayaran:</h3>
+    <select id="metodePembayaran">
+      <option value="">-- Pilih Metode --</option>
+      <option value="DANA">DANA</option>
+      <option value="QRIS">QRIS</option>
+    </select><br>
+    <button class="order-button glitch" onclick="orderNow()">Order via WhatsApp</button>
+  </div>
+</div>
+
+<!-- TESTIMONI -->
+<div class="testimoni-panel">
+  <h2>Testimoni Pembeli</h2>
+  <ul id="testimoniList" style="margin: 10px 0;"></ul>
+  <button class="blue" onclick="backToMain()">Kembali</button>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel">
+  <h2>Halaman Admin</h2>
+  <h3>Kelola Testimoni</h3>
+  <input type="text" id="newTesti" placeholder="Tulis testimoni..." style="padding: 8px; width: 60%;">
+  <button class="green" onclick="addTestimoni()">Upload</button>
+  <ul id="adminTestimoniList" style="margin-top: 10px;"></ul>
+  <button class="blue" onclick="backToMain()">Kembali</button>
+</div>
+
+<footer>© 2025 Digital Market by Nationalyti. All rights reserved.</footer>
+
+<script>
+  const panels = [...Array(10).keys()].map(i => ({ name: `Panel ${i+1} GB`, price: 1000 + i * 1000 }));
+  const testimoni = [];
+  let selectedProduct = null;
+  let selectedBtn = null;
+
+  const panelList = document.getElementById("panelList");
+  panels.forEach(panel => {
+    const btn = document.createElement("button");
+    btn.className = "purple glitch";
+    btn.innerText = panel.name;
+    btn.onclick = () => pilih(panel.name, panel.price, btn);
+    panelList.appendChild(btn);
+  });
+
+  function pilih(nama, harga, el) {
+    selectedProduct = { nama, harga };
+    if (selectedBtn) selectedBtn.classList.remove("selected");
+    el.classList.add("selected");
+    selectedBtn = el;
+  }
+
+  function orderNow() {
+    const metode = document.getElementById("metodePembayaran").value;
+    if (!selectedProduct) return alert("Pilih menu produk terlebih dahulu!");
+    if (!metode) return alert("Pilih metode pembayaran terlebih dahulu!");
+    const { nama, harga } = selectedProduct;
+    const text = `*Order Produk Digital*\n\n- Nama Barang: ${nama}\n- Harga: Rp ${harga.toLocaleString()}\n- Pembayaran: ${metode}\n\nSilakan lanjutkan transaksi.`;
+    window.open(`https://wa.me/628895485706?text=${encodeURIComponent(text)}`, "_blank");
+  }
+
+  function loginAdmin() {
+  document.getElementById("loginPopup").style.display = "flex";
+}
+
+function closeLogin() {
+  document.getElementById("loginPopup").style.display = "none";
+}
+
+function submitLogin() {
+  const user = document.getElementById("usernameInput").value;
+  const pass = document.getElementById("passwordInput").value;
+  if (user === "admin" && pass === "admin123") {
+    document.querySelector(".main-menu").style.display = "none";
+    document.querySelector(".admin-panel").style.display = "block";
+    document.getElementById("loginPopup").style.display = "none";
+    loadAdminTestimoni();
+  } else {
+    alert("Username atau password salah!");
+  }
+}
+
+  function showTestimoni() {
+    document.querySelector(".main-menu").style.display = "none";
+    document.querySelector(".testimoni-panel").style.display = "block";
+    const list = document.getElementById("testimoniList");
+    list.innerHTML = testimoni.length ? testimoni.map(t => `<li>• ${t}</li>`).join("") : "<i>Belum ada testimoni</i>";
+  }
+
+  function backToMain() {
+    document.querySelector(".main-menu").style.display = "block";
+    document.querySelector(".testimoni-panel").style.display = "none";
+    document.querySelector(".admin-panel").style.display = "none";
+  }
+
+  function addTestimoni() {
+    const val = document.getElementById("newTesti").value;
+    if (!val) return alert("Isi testimoni dulu!");
+    testimoni.push(val);
+    document.getElementById("newTesti").value = "";
+    loadAdminTestimoni();
+  }
+
+  function loadAdminTestimoni() {
+    const ul = document.getElementById("adminTestimoniList");
+    ul.innerHTML = testimoni.map((t, i) => `<li>${t} <button onclick="hapusTestimoni(${i})">❌</button></li>`).join("");
+  }
+
+  function hapusTestimoni(index) {
+    testimoni.splice(index, 1);
+    loadAdminTestimoni();
+  }
+
+  window.onload = () => {
+    setTimeout(() => {
+      document.querySelector(".main-menu").style.display = "block";
+    }, 3000);
+  }
+</script>
+<!-- Login Popup -->
+<div id="loginPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index:99999; justify-content:center; align-items:center;">
+  <div style="background:#111; padding:30px; border:2px solid #00ffee; border-radius:10px; width:300px; text-align:center; box-shadow:0 0 20px #00ffee;">
+    <h3 style="color:#00ffee; margin-bottom:20px;">Login Admin</h3>
+    <input id="usernameInput" type="text" placeholder="Username" style="padding:10px; width:90%; margin-bottom:10px; border-radius:5px; border:none; background:#000; color:#0ff; box-shadow:0 0 10px #0ff;"><br>
+    <input id="passwordInput" type="password" placeholder="Password" style="padding:10px; width:90%; margin-bottom:20px; border-radius:5px; border:none; background:#000; color:#0ff; box-shadow:0 0 10px #0ff;"><br>
+    <button onclick="submitLogin()" style="padding:10px 20px; background:#00ffee; color:#000; font-weight:bold; border:none; border-radius:5px;">Login</button>
+    <br><br>
+    <button onclick="closeLogin()" style="background:none; color:#888; text-decoration:underline; border:none; cursor:pointer;">Batal</button>
+  </div>
+</div>
+</body>
+</html>
